@@ -1,8 +1,13 @@
 ---
 title: Blog開張啦!
 date: 2021-11-16 15:53:29
+index_img: /img/hello and welcome.gif
+banner_img: /img/hello and welcome.gif
 tags:
 - [Blog]
+categories:
+- blog
+- 心得
 ---
 
 # 部落格終於開張啦!
