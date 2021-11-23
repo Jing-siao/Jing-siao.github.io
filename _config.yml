@@ -107,4 +107,4 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "修改ico" # Commit 訊息
+  message: "增加關於我資料" # Commit 訊息
