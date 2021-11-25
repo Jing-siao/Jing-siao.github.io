@@ -4,7 +4,7 @@ tags:
   - - yaml
   - - json
 categories:
-  - data
+  - 筆記
   - learn
 date: 2021-11-24 15:59:34
 ---
@@ -61,11 +61,11 @@ social:
      },
     "social": [
         {
-          "platform": "github"
+          "platform": "github",
           "url": "https://github.com/Jing-siao"
         },
         {
-          "platform": "email"
+          "platform": "email",
           "url": "vicky820715@gmail.com"
         }  
     ]

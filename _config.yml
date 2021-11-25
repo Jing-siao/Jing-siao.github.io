@@ -107,4 +107,4 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "發布文章 yaml&json" # Commit 訊息
+  message: "新增樣式及寫入格式" # Commit 訊息
