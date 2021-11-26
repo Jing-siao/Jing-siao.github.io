@@ -24,7 +24,7 @@ img.sticker {
 
 .code-wrapper pre::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(41, 138, 202, 0.747);
+  -webkit-box-shadow: inset 0 0 6px rgba(41, 138, 202, 0.7);
 }
 
 .code-wrapper::before {
@@ -47,7 +47,7 @@ img.sticker {
 }
 
 .code-wrapper::after {
-  content: ' ';
+  content: '';
   position: absolute;
   -webkit-border-radius: 50%;
   border-radius: 50%;
