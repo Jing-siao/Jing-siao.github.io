@@ -30,6 +30,7 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
 
+
 # Writing
 new_post_name: :year-:month-:day-:title.md # File name of new posts
 default_layout: post
@@ -101,14 +102,6 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: fluid
 
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
-  branch: gh-pages # 儲存庫分支
-  message: "google驗證" # Commit 訊息
-
 # 自動生成sitemap
 sitemap:
   path: sitemap.xml
@@ -129,5 +122,32 @@ neat_js:
   output:
   compress:
   exclude:
-    - '**/*.custom.js'
+    - '**/*.min.js'
+    - '**/index.js'
+live2d:
+  enable: true
+  scriptFrom: local
+  pluginRootPath: live2dw/
+  pluginJsPath: lib/
+  pluginModelPath: assets/
+  tagMode: false
+  log: false
+  model:
+    use: live2d-widget-model-hijiki
+  display:
+    position: right
+    width: 150
+    height: 300
+  mobile:
+    show: false
+    
+# Deployment
+## Docs: https://hexo.io/docs/one-command-deployment
+deploy:
+  type: git
+  repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
+  branch: gh-pages # 儲存庫分支
+  message: "修改404 及增加live2D" # Commit 訊息
+
+
 

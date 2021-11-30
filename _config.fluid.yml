@@ -887,10 +887,10 @@ page:
 #---------------------------
 page404:
   enable: true
-  banner_img: /img/default.png
-  banner_img_height: 85
-  banner_mask_alpha: 0.3
-  subtitle: "頁面吃光光"
+  banner_img: /img/Minimalistic mystical mountains.jpg
+  banner_img_height: 100
+  banner_mask_alpha: 0.2
+  subtitle: 
 
 
 #---------------------------
