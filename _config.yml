@@ -149,7 +149,7 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "修改404 及增加live2D" # Commit 訊息
+  message: "發布vuecli裡的路徑" # Commit 訊息
 
 
 
