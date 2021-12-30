@@ -105,8 +105,12 @@ theme: fluid
 # 自動生成sitemap
 sitemap:
   path: sitemap.xml
+  rel: false
+  tags: true
+  categories: true
 baidusitemap:
   path: baidusitemap.xml
+
 # 開啟壓縮
 neat_enable: true
 neat_html:
@@ -149,7 +153,7 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "發布vuecli裡的路徑" # Commit 訊息
+  message: "發布以拉超連結" # Commit 訊息
 
 
 
