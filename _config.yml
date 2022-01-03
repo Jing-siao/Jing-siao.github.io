@@ -108,8 +108,6 @@ sitemap:
   rel: false
   tags: true
   categories: true
-baidusitemap:
-  path: baidusitemap.xml
 
 # 開啟壓縮
 neat_enable: true
@@ -153,7 +151,7 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "發布以拉超連結" # Commit 訊息
+  message: "重載sitemap" # Commit 訊息
 
 
 
