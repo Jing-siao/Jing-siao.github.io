@@ -182,7 +182,7 @@ social:
   
 
   ```yaml
-  string: |
+  string: >
   	My name is Jing.
   	I'm 18 years old.
   	  I am a coder.

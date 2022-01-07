@@ -151,7 +151,7 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "重載sitemap" # Commit 訊息
+  message: "訂正錯誤" # Commit 訊息
 
 
 
