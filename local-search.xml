@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>jquery點擊空白處隱藏元素</title>
+    <link href="/blurAction/"/>
+    <url>/blurAction/</url>
+    
+    <content type="html"><![CDATA[<h1 id="jquery點擊空白處隱藏元素"><a href="#jquery點擊空白處隱藏元素" class="headerlink" title="jquery點擊空白處隱藏元素"></a>jquery點擊空白處隱藏元素</h1><p>前陣子在做select偵測下拉選單有沒有被打開<a href="https://jing-siao.github.io/selectBlur/">(見下篇)</a>，突然想到之前有做過這個小測試，focus input出現小鍵盤，按下一步或關閉按鈕以及空白處，小鍵盤會收起，這功能應該大家幾乎都有做過，以下列出需要的步驟。</p><ul><li>input focus後會下滑出現小鍵盤</li><li>按數字鍵時小鍵盤不能收起</li><li>按下一步和關閉時鍵盤收起</li><li>點擊空白處小鍵盤會收起</li></ul><p><img src="/img/post/jq%E9%BB%9E%E6%93%8A%E7%A9%BA%E7%99%BD%E8%99%95/CPT2203141911.gif" alt="focus 出現小鍵盤"></p><h2 id="focus-出現小鍵盤"><a href="#focus-出現小鍵盤" class="headerlink" title="focus 出現小鍵盤"></a>focus 出現小鍵盤</h2><p>先簡單介紹一下html架構</p><ul><li>testInput1為session1裡面的input</li><li>testInput2為session2裡面的input</li><li>keyboard則是鍵盤的部份</li></ul><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;block&quot;</span>&gt;</span>    session1    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;testInput1&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;testInput&quot;</span>&gt;</span>  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;block&quot;</span>&gt;</span>    session2    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;testInput2&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;testInput&quot;</span>&gt;</span>  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;key&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;keyboard&quot;</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;key&quot;</span>&gt;</span>數字<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>數字<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>數字<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;go&quot;</span>&gt;</span>下一步<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;close&quot;</span>&gt;</span>關閉<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre></div><p>focus後下滑出現小鍵盤</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">$(<span class="hljs-string">&#x27;.testInput&#x27;</span>).focus(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;    $(<span class="hljs-string">&quot;.key&quot;</span>).slideDown();&#125;);</code></pre></div><h2 id="冒泡事件"><a href="#冒泡事件" class="headerlink" title="冒泡事件"></a>冒泡事件</h2><p>按鍵盤上的數字時，鍵盤不能收起來，這時候就要用 <span class="label label-danger">event.stopPropagation()</span>，不然怎麼點數字，鍵盤一樣會收起來，這裡可以解釋為，除了下一步和關閉外，按鍵盤內的所有東西(紅色部份)都不會收起來</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">$(<span class="hljs-string">&quot;#keyboard&quot;</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>&#123;    event.stopPropagation();    <span class="hljs-keyword">let</span> go = $(<span class="hljs-string">&#x27;#go&#x27;</span>);    <span class="hljs-keyword">let</span> close = $(<span class="hljs-string">&#x27;#close&#x27;</span>);    <span class="hljs-keyword">if</span> (go.is(event.target) || close.is(event.target))      $(<span class="hljs-string">&quot;.key&quot;</span>).slideUp();&#125;);</code></pre></div><h2 id="點擊空白處小鍵盤會收起"><a href="#點擊空白處小鍵盤會收起" class="headerlink" title="點擊空白處小鍵盤會收起"></a>點擊空白處小鍵盤會收起</h2><p>除了紅色框框以及input之外，都屬於空白處，所以就是說除了testInput1與testInput2，小鍵盤都要slideUp</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">$(<span class="hljs-built_in">document</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">event</span>) </span>&#123;    <span class="hljs-comment">//目標</span>    <span class="hljs-keyword">let</span> testInput1 = $(<span class="hljs-string">&#x27;#testInput1&#x27;</span>);    <span class="hljs-keyword">let</span> testInput2 = $(<span class="hljs-string">&#x27;#testInput2&#x27;</span>);    <span class="hljs-keyword">if</span> (!testInput1.is(event.target) &amp;&amp; !testInput2.is(event.target))      $(<span class="hljs-string">&quot;.key&quot;</span>).slideUp();&#125;);</code></pre></div><p>以上就是完整解說啦~是不是很簡單呢? <img src="/sticker/恩.gif" class="sticker" /><br>放上我codepen連結<a href="https://codepen.io/JingWunHsiao/pen/PoWoxjV">點擊空白處隱藏元素</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>jquery</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>jquery</tag>
+      
+      <tag>冒泡事件</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何在vscode切換github帳號</title>
+    <link href="/changeGitAccountInVscode/"/>
+    <url>/changeGitAccountInVscode/</url>
+    
+    <content type="html"><![CDATA[<h1 id="如何在vscode切換github帳號"><a href="#如何在vscode切換github帳號" class="headerlink" title="如何在vscode切換github帳號"></a>如何在vscode切換github帳號</h1><p>假設你有一個自己的github帳戶和公司的github帳戶，因為同一台電腦，每次上傳都只用自己的github帳戶上傳，兩個又不想要混一起用，那怎麼辦呢?</p><h2 id="安裝套件-git-autoconfig"><a href="#安裝套件-git-autoconfig" class="headerlink" title="安裝套件 git-autoconfig"></a>安裝套件 git-autoconfig</h2><p><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/git-autoconfig.jpg" alt="git-autoconfig"></p><h2 id="設定github帳號"><a href="#設定github帳號" class="headerlink" title="設定github帳號"></a>設定github帳號</h2><p>ctrl+p先叫出搜尋視窗，在視窗輸入 <span class="label label-danger">>git</span> 找到 <span class="label label-danger">git-autoconfig:Set Config</span></p><p><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/set.jpg" alt="Set Config"></p><p>之後輸入email跟name</p><p><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/%E8%BC%B8%E5%85%A5email.jpg" alt="輸入email"><br><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/%E8%BC%B8%E5%85%A5name.jpg" alt="輸入name"></p><p>好了之後可以在settings.json(File &gt; Preferences &gt; Setting)看到剛剛新增的，找不到settings.json的，右上方有一個文件旋轉的按鈕open settings(JSON)，點下去就可以看到了<br><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/%E5%B8%B3%E8%99%9F.jpg" alt="settings"></p><p>然後再重複剛剛的動作新增第二個帳號，你也可以在settings.json裡自己輸入</p><h2 id="切換github帳號"><a href="#切換github帳號" class="headerlink" title="切換github帳號"></a>切換github帳號</h2><p>設定好後，要來push上去了，假設你今天要用另一個帳號push，作法一樣ctrl+p先叫出搜尋視窗，在視窗輸入 <span class="label label-danger">>git</span> 找到 <span class="label label-danger">git-autoconfig:Set Config</span>，這時候可以選擇你要用哪一個帳號上傳</p><p><img src="/img/post/%E5%88%87%E6%8F%9Bgithub%E5%B8%B3%E8%99%9F/%E5%88%87%E6%8F%9B.jpg" alt="切換帳號"></p><p>按下Enter鍵後，就可以push了，在github commit上面看就會是不同帳號囉!是不是很簡單呀~</p><hr><p>  參考資料:<br>  <a href="https://stackoverflow.com/questions/62625513/can-i-log-in-two-different-github-account-in-vscode">Can I log in two different github account in vscode?</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>vscode</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vscode</tag>
+      
+      <tag>github</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>解決Vue在Axios之後，props接不到資料</title>
+    <link href="/vueAxiosProps/"/>
+    <url>/vueAxiosProps/</url>
+    
+    <content type="html"><![CDATA[<h1 id="解決Vue在Axios之後，props接不到資料"><a href="#解決Vue在Axios之後，props接不到資料" class="headerlink" title="解決Vue在Axios之後，props接不到資料"></a>解決Vue在Axios之後，props接不到資料</h1><p>預想是: 在父組件created使用Axios傳API，回傳後再props給子組件，之後再秀在畫面上，然而props出來卻是空的，以下來看看console</p><h2 id="生命週期"><a href="#生命週期" class="headerlink" title="生命週期"></a>生命週期</h2><p><img src="/img/post/vueProps%E6%8E%A5%E4%B8%8D%E5%88%B0%E8%B3%87%E6%96%99/console1.jpg" alt="子層找不到"></p><p>因為是Axios非同步問題，可以看到子層先created，所以當然接不到props</p><h2 id="解決辦法-加上watch"><a href="#解決辦法-加上watch" class="headerlink" title="解決辦法 加上watch"></a>解決辦法 加上watch</h2><p>在子組件加上watch偵聽props，資料就可以呈現囉!</p><div class="hljs code-wrapper"><pre><code class="hljs vue">watch: &#123;  test(newVal) &#123;    if (newVal) &#123;      console.log(&#x27;watch&#x27;, newVal);    &#125;  &#125;,&#125;,</code></pre></div><p><img src="/img/post/vueProps%E6%8E%A5%E4%B8%8D%E5%88%B0%E8%B3%87%E6%96%99/console2.jpg" alt="watch"></p><hr><p>  參考資料:<br>  <a href="https://medium.com/@seed45699/vue-%E9%9D%9E%E5%90%8C%E6%AD%A5%E8%99%95%E7%90%86%E5%92%8C%E7%88%B6%E5%AD%90%E7%B5%84%E4%BB%B6%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F%E4%B9%8B%E9%97%9C%E4%BF%82-5bd5fea513c6">Vue 父子組件生命週期之關係</a><br>  <a href="https://stackoverflow.com/questions/44584292/how-to-listen-for-props-changes">How to listen for ‘props’ changes</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>learn</category>
+      
+      <category>vue</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>js</tag>
+      
+      <tag>vue</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何在Illustrator建立超連結</title>
+    <link href="/illustrator-hyperlink-pdf/"/>
+    <url>/illustrator-hyperlink-pdf/</url>
+    
+    <content type="html"><![CDATA[<h1 id="如何在Illustrator建立超連結"><a href="#如何在Illustrator建立超連結" class="headerlink" title="如何在Illustrator建立超連結"></a>如何在Illustrator建立超連結</h1><p>google搜尋一直搜不到相關的教學，大部分都用Indesign做，或轉出PDF後再用Adobe Acrobat編輯，但沒有裝Indesign怎麼辦?Adobe Acrobat又要錢錢，以下就來記錄一下我怎麼做吧!</p><h2 id="建立要連結的圖或文字"><a href="#建立要連結的圖或文字" class="headerlink" title="建立要連結的圖或文字"></a>建立要連結的圖或文字</h2><p>首先，先放圖片或文字，等等按下就可以連到url，這邊我示範的是文字，可以替文字設為藍色並加上底線，這樣可以讓人知道這是可以點擊的</p><p><img src="/img/post/AI%E8%B6%85%E9%80%A3%E7%B5%90/step1.jpg" alt="建立連結的圖或文字"></p><h2 id="貼上要超連結網址"><a href="#貼上要超連結網址" class="headerlink" title="貼上要超連結網址"></a>貼上要超連結網址</h2><p>貼上網址後，需要拉<span class="label label-danger">大小盡量跟文字長寬一樣</span>，避免文字外的地方也可以點到網址</p><p><img src="/img/post/AI%E8%B6%85%E9%80%A3%E7%B5%90/step2.jpg" alt="貼上要超連結網址"></p><h2 id="網址放在文字後面，把透明度設為0"><a href="#網址放在文字後面，把透明度設為0" class="headerlink" title="網址放在文字後面，把透明度設為0"></a>網址放在文字後面，把透明度設為0</h2><p>網址放在文字後面，重點把<span class="label label-danger">透明度設為0</span>，才不會露餡，透明度面板在 視窗 &gt; 透明度</p><p><img src="/img/post/AI%E8%B6%85%E9%80%A3%E7%B5%90/step3.jpg" alt="圖片中這裡先顯示12%，以免大家看不到在哪裡"></p><h2 id="另存為PDF檔，勾選最佳化web檢視"><a href="#另存為PDF檔，勾選最佳化web檢視" class="headerlink" title="另存為PDF檔，勾選最佳化web檢視"></a>另存為PDF檔，勾選最佳化web檢視</h2><p>重點來了!另存後依定要把<span class="label label-danger">最佳化web檢視勾起來</span>，少了這一步就會連結不到歐</p><p><img src="/img/post/AI%E8%B6%85%E9%80%A3%E7%B5%90/step4.jpg" alt="勾選最佳化web檢視"></p><p>接下來用網頁開啟旁邊出現小手手，就代表可以點擊囉!</p><p><img src="/img/post/AI%E8%B6%85%E9%80%A3%E7%B5%90/step5.jpg"></p><hr><p>參考資料:<br><a href="https://www.youtube.com/watch?v=wswp38Co2Ms&ab_channel=IllustratorTutorials">How to create hyperlink image / text in Adobe Illustrator</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>Illustrator</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Illustrator</tag>
+      
+      <tag>超連結</tag>
+      
+      <tag>hyperlink</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>vue cli裡的 ~@ 是什麼意思? 談談vue cli的路徑</title>
+    <link href="/vuecliPath/"/>
+    <url>/vuecliPath/</url>
+    
+    <content type="html"><![CDATA[<h1 id="vue-cli裡的-是什麼意思-談談vue-cli的路徑"><a href="#vue-cli裡的-是什麼意思-談談vue-cli的路徑" class="headerlink" title="vue cli裡的 ~@ 是什麼意思? 談談vue cli的路徑"></a>vue cli裡的 ~@ 是什麼意思? 談談vue cli的路徑</h1><p>前幾天踩到路徑的坑，在vue cli中引入字體一直噴錯(等下會講)，所以決定來寫一下紀錄。</p><h2 id="引用路徑方式"><a href="#引用路徑方式" class="headerlink" title="引用路徑方式"></a>引用路徑方式</h2><p>在vue中有以下幾種方式引用路徑</p><ul><li>絕對路徑</li><li>相對路徑</li><li>~開頭的模組</li><li>@開頭的模組</li></ul><h2 id="為src資料夾的縮寫"><a href="#為src資料夾的縮寫" class="headerlink" title="@為src資料夾的縮寫"></a>@為src資料夾的縮寫</h2><p>例如你的檔案結構很深，用相對路徑就必須用 <span class="label label-danger">../</span> 一直點下去會到天荒地老 <img src="/sticker/zzz.gif" class="sticker"/>，所以webpack已經幫你包好，<span class="label label-danger">@就是src</span> 的別名</p><p>例如</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">@<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;../../../../assets/css/main.scss&#x27;</span></code></pre></div><p>可以簡寫成</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">@<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;@/assets/css/main.scss&#x27;</span></code></pre></div><p>來個例子</p><div class="note note-warning">            <p>錯誤寫法: </p>          </div><p>會被當作字串而不是路徑，需要在外面加層 <span class="label label-danger">require( )</span></p><div class="hljs code-wrapper"><pre><code class="hljs vue">&lt;template&gt;  &lt;img :src=&quot;imgSrc&quot; /&gt;&lt;template&gt;&lt;script&gt;const src = &#x27;@/assets/img/logo.png&#x27;;export default &#123;  data() &#123;    return &#123;      imgSrc: src,    &#125;;  &#125;,&#125;;&lt;/script&gt;</code></pre></div><div class="note note-success">            <p>正確寫法: </p>          </div><div class="hljs code-wrapper"><pre><code class="hljs vue">&lt;template&gt;  &lt;img :src=&quot;imgSrc&quot; /&gt;&lt;template&gt;&lt;script&gt;const src = require(&#x27;@/assets/img/logo.png&#x27;);export default &#123;  data() &#123;    return &#123;      imgSrc: src,    &#125;;  &#125;,&#125;;&lt;/script&gt;</code></pre></div><p>如果不綁定，直接寫在裡面也行</p><div class="hljs code-wrapper"><pre><code class="hljs vue">&lt;template&gt;  &lt;img src=&quot;@/assets/img/logo.png&quot; /&gt;&lt;template&gt;</code></pre></div><h2 id="開頭，以後的内容都會被當作模組請求被解析"><a href="#開頭，以後的内容都會被當作模組請求被解析" class="headerlink" title="~ 開頭，以後的内容都會被當作模組請求被解析"></a>~ 開頭，以後的内容都會被當作模組請求被解析</h2><p>在css以及html中是不能只寫 <span class="label label-danger">@</span> 的，會找不到路徑而報錯，來看以下例子</p><p>原本我是寫:</p><div class="hljs code-wrapper"><pre><code class="hljs css"><span class="hljs-keyword">@font-face</span> &#123;  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;Noto Sans TC&quot;</span>;  <span class="hljs-attribute">src</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">@/assets/font/NotoSansTC-Regular.otf</span>) <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;OpenType&quot;</span>);&#125;</code></pre></div><p>然而會出現錯誤如圖<br><img src="/img/post/vuecli%E8%A3%A1@%E6%84%8F%E6%80%9D/error.jpg" alt="報錯"></p><p>正是因為webpack編譯後的路徑是 <span class="label label-danger">./@/assets/font/NotoSansTC-Regular.otf</span> 而正確的路徑則是 <span class="label label-danger">src/assets/font/NotoSansTC-Regular.otf</span>，所以當然會找不到，此時只要在前面加上 <span class="label label-danger">~</span> 就可以解析成根目錄底下的src資料夾!</p><div class="hljs code-wrapper"><pre><code class="hljs css"><span class="hljs-keyword">@font-face</span> &#123;  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;Noto Sans TC&quot;</span>;  <span class="hljs-attribute">src</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">~@/assets/font/NotoSansTC-Regular.otf</span>) <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;OpenType&quot;</span>);&#125;</code></pre></div><p>background-image也可以這樣使用 <span class="label label-danger">~</span></p><div class="hljs code-wrapper"><pre><code class="hljs css"><span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">~@/assets/img/signInBg.jpg</span>);</code></pre></div><p>這樣大家有沒有更加了解@與~的用法呢? <img src="/sticker/恩.gif" class="sticker"/></p><hr><p>  參考資料:<br>  <a href="https://blog.csdn.net/qq_21567385/article/details/108393932">react+less中使用动态路径（波浪线~的使用）</a><br>  <a href="https://cli.vuejs.org/zh/guide/html-and-static-assets.html#%E4%BB%8E%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E5%AF%BC%E5%85%A5">Vue Cli 从相对路径导入</a><br>  <a href="https://juejin.cn/post/6844903718152830989">webpack中的css引入文件需要用~@的形式，为什么？</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>learn</category>
+      
+      <category>vue</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>js</tag>
+      
+      <tag>css</tag>
+      
+      <tag>vue</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Mac看起來就比較炫炮阿!! -在hexo裡美化code區塊為Mac樣式，並顯示檔案類型</title>
+    <link href="/MacCodeCss/"/>
+    <url>/MacCodeCss/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Mac看起來就比較炫炮阿-在hexo裡美化code區塊為Mac樣式，並顯示檔案類型"><a href="#Mac看起來就比較炫炮阿-在hexo裡美化code區塊為Mac樣式，並顯示檔案類型" class="headerlink" title="Mac看起來就比較炫炮阿!! -在hexo裡美化code區塊為Mac樣式，並顯示檔案類型"></a>Mac看起來就比較炫炮阿!! -在hexo裡美化code區塊為Mac樣式，並顯示檔案類型</h1><p>剛寫完文章覺得code區塊都醜醜的，fluid裡的樣式又沒有很喜歡，所以就決定來客製一下啦! 一開始還不知道怎麼改，查了一些教學發現寫得又臭又長，這時候想起了F12，不知道怎麼辦的時候，F12就給他用力的按下去就對了!</p><p>此篇文章是使用Hexo + Fluid主題下客製的，不是Fluid主題的朋友們不用帶擔心，基本上都大同小異。</p><p>首先，先來張對比圖 <del>(沒有對比沒有傷害，雖然我不是用Mac)</del><br>左邊為原本的樣式，右邊為新樣式，是不是差很多! <img src="/sticker/happyEyes.gif" class="sticker"/> </p><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/code%E5%B0%8D%E6%AF%94%E5%9C%96.jpg" alt="左邊為原本的樣式，右邊為新樣式"></p><h2 id="相關設定"><a href="#相關設定" class="headerlink" title="相關設定"></a>相關設定</h2><p>在根目錄的<span class="label label-danger">_config.fluid.yml</span>的顯示行號先<span class="label label-danger">關掉</span>，不然等下會影響樣式，若堅持要打開的話，css部分就需要自己微調一下歐。在根目錄找不到_config.fluid.yml，應該會在/themes/fluid/config.yml，當初我是用npm裝的，用clone的話位置會不一樣</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">code:</span> <span class="hljs-attr">line_number:</span> <span class="hljs-literal">false</span> <span class="hljs-comment">#關掉行號</span></code></pre></div><p>一樣在<span class="label label-danger">_config.fluid.yml</span>找到  <span class="label label-danger">custom_js</span>與<span class="label label-danger">custom_css</span>來指定路徑，是等下要放css和js的地方</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">custom_js:</span> <span class="hljs-string">/js/custom.js</span><span class="hljs-attr">custom_css:</span> <span class="hljs-string">/css/custom.css</span></code></pre></div><p>接下來在<span class="label label-danger">source</span>資料裡新建css資料夾及js資料夾，css資料夾新增<span class="label label-danger">custom.css</span>，js資料夾新增<span class="label label-danger">custom.js</span>，也就是剛剛設定路徑的地方</p><h2 id="添加CSS樣式"><a href="#添加CSS樣式" class="headerlink" title="添加CSS樣式"></a>添加CSS樣式</h2><p>按F12看一下，我們要在哪個地方新增css，找到code-wrapper這個class</p><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-1.jpg" alt="code-wrapper"></p><ul><li>code-wrapper增加陰影與圓角</li><li>用偽元素before增加上方凸出的區塊</li><li>用偽元素after增加左上方的燈</li><li>改變預設的卷軸</li></ul><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-2.jpg"></p><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-3.jpg"></p>  <span class="label label-danger">/source/css/custom.css</span> 完整css程式碼<div class="hljs code-wrapper"><pre><code class="hljs css"><span class="hljs-selector-class">.code-wrapper</span> &#123; <span class="hljs-attribute">position</span>: relative; <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">8px</span> <span class="hljs-meta">!important</span>; <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">5px</span> -<span class="hljs-number">5px</span> <span class="hljs-number">20px</span> <span class="hljs-number">5px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>); <span class="hljs-attribute">padding-top</span>: <span class="hljs-number">14px</span>; <span class="hljs-attribute">margin</span>: <span class="hljs-number">30px</span> <span class="hljs-number">0</span>;&#125;<span class="hljs-selector-class">.code-wrapper</span><span class="hljs-selector-pseudo">::before</span> &#123; <span class="hljs-attribute">color</span>: <span class="hljs-built_in">rgb</span>(<span class="hljs-number">197</span>, <span class="hljs-number">197</span>, <span class="hljs-number">197</span>); <span class="hljs-attribute">content</span>: <span class="hljs-built_in">attr</span>(data-rel); <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">8px</span> <span class="hljs-number">8px</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">25px</span>; <span class="hljs-attribute">line-height</span>: <span class="hljs-number">30px</span>; <span class="hljs-attribute">background</span>: <span class="hljs-number">#21252b</span>; <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>; <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">top</span>: -<span class="hljs-number">20px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">0</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>; <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&#x27;Source Sans Pro&#x27;</span>, sans-serif; <span class="hljs-attribute">font-weight</span>: bold; <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span> <span class="hljs-number">65px</span>; <span class="hljs-attribute">text-indent</span>: <span class="hljs-number">15px</span>; <span class="hljs-attribute">float</span>: left;&#125;<span class="hljs-selector-class">.code-wrapper</span><span class="hljs-selector-pseudo">::after</span> &#123; <span class="hljs-attribute">content</span>: <span class="hljs-string">&#x27;&#x27;</span>; <span class="hljs-attribute">position</span>: absolute; -webkit-<span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>; <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">50%</span>; <span class="hljs-attribute">background</span>: <span class="hljs-number">#fc625d</span>; <span class="hljs-attribute">width</span>: <span class="hljs-number">12px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">12px</span>; <span class="hljs-attribute">top</span>: -<span class="hljs-number">17px</span>; <span class="hljs-attribute">left</span>: <span class="hljs-number">10px</span>; <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">4px</span>; -webkit-<span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">20px</span> <span class="hljs-number">0px</span> <span class="hljs-number">#fdbc40</span>, <span class="hljs-number">40px</span> <span class="hljs-number">0px</span> <span class="hljs-number">#35cd4b</span>; <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">20px</span> <span class="hljs-number">0px</span> <span class="hljs-number">#fdbc40</span>, <span class="hljs-number">40px</span> <span class="hljs-number">0px</span> <span class="hljs-number">#35cd4b</span>; <span class="hljs-attribute">z-index</span>: <span class="hljs-number">3</span>;&#125;<span class="hljs-selector-class">.code-wrapper</span> pre::-webkit-scrollbar &#123;  height: <span class="hljs-number">10px</span>;&#125;<span class="hljs-selector-class">.code-wrapper</span> pre::-webkit-scrollbar-track &#123;  -webkit-box-shadow: inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">6px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.5</span>);  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">10px</span>;&#125;<span class="hljs-selector-class">.code-wrapper</span> pre::-webkit-scrollbar-thumb &#123;  border-radius: <span class="hljs-number">10px</span>;  -webkit-<span class="hljs-attribute">box-shadow</span>: inset <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">6px</span> <span class="hljs-built_in">rgba</span>(<span class="hljs-number">41</span>, <span class="hljs-number">138</span>, <span class="hljs-number">202</span>, <span class="hljs-number">0.7</span>);&#125;</code></pre></div><h2 id="增加jS顯示語言類型"><a href="#增加jS顯示語言類型" class="headerlink" title="增加jS顯示語言類型"></a>增加jS顯示語言類型</h2><p>再來要怎麼顯示語言類型的部分呢?</p><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-5.jpg"></p><p>首先一樣觀察一下，發現每次在md檔輸入程式後會替你增加class在後方</p><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-4.jpg"></p><ol><li>抓到每一個 <span class="label label-danger">&lt;code&gt;</span> 標籤</li><li>取第二個class</li><li>再把class名稱塞入 <span class="label label-danger">&lt;code-wrapper&gt;</span> 標籤裡的 <span class="label label-danger">data-*</span> 屬性，也就是剛剛css預先設好的屬性</li></ol><p><img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-7.jpg"></p><ol start="4"><li>若抓到的class名稱為<span class="label label-danger">applescript</span>則設為空值，因為若md檔沒輸入語言類型的話，hexo會自動幫你加上applescript這個class (如下方圖，若紅框處沒寫類型的話)</li></ol><p> <img src="/img/post/Mac%E7%9C%8B%E8%B5%B7%E4%BE%86%E5%B0%B1%E6%AF%94%E8%BC%83%E7%82%AB%E7%82%AE%E9%98%BF/css-6.jpg"></p>  <span class="label label-danger">/source/js/custom.js</span> 完整css程式碼<div class="hljs code-wrapper"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> getCodeType = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">&#x27;code&#x27;</span>);<span class="hljs-keyword">let</span> attrData = <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">&#x27;code-wrapper&#x27;</span>);<span class="hljs-keyword">let</span> codeType = [];<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; getCodeType.length; i++) &#123; codeType = getCodeType[i].className.split(<span class="hljs-string">&quot; &quot;</span>)[<span class="hljs-number">1</span>]; attrData[i].setAttribute(<span class="hljs-string">&quot;data-rel&quot;</span>, codeType); codeType === <span class="hljs-string">&#x27;applescript&#x27;</span> ?  attrData[i].setAttribute(<span class="hljs-string">&quot;data-rel&quot;</span>, <span class="hljs-string">&#x27;&#x27;</span>) :  attrData[i].setAttribute(<span class="hljs-string">&quot;data-rel&quot;</span>, codeType);&#125;;</code></pre></div><p>最後，見證奇蹟的時刻到了! </p><img src="/sticker/Do Re Mi So.jpg" class="sticker" style="max-height: 200px;"/><p>你就擁有一個漂亮的code區塊啦 ~ ~ ~ <img src="/sticker/hero.gif" class="sticker" /></p><hr><p>  參考資料:<br>  <a href="https://tomorrow505.xyz/Hexo-Fluid%E5%AE%9E%E7%8E%B0mac-panel%E9%A3%8E%E6%A0%BC%E4%BB%A3%E7%A0%81%E5%9D%97/">Hexo-Fluid实现mac panel风格代码块</a><br>  <a href="https://zhuanlan.zhihu.com/p/124888459">Hexo 博客代码块样式美化</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>learn</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>code區塊美化</tag>
+      
+      <tag>mac樣式</tag>
+      
+      <tag>js</tag>
+      
+      <tag>css</tag>
+      
+      <tag>hexo</tag>
+      
+      <tag>fluid</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>yaml是什麼? 能吃嗎? 和json有甚麼不同</title>
+    <link href="/ymlAndJson/"/>
+    <url>/ymlAndJson/</url>
+    
+    <content type="html"><![CDATA[<h1 id="yaml是什麼-能吃嗎-和json有甚麼不同"><a href="#yaml是什麼-能吃嗎-和json有甚麼不同" class="headerlink" title="yaml是什麼? 能吃嗎? 和json有甚麼不同"></a>yaml是什麼? 能吃嗎? 和json有甚麼不同</h1><p>相信大家對於json一定不陌生，但甚麼是yaml呢?<br>程式小菜鳥的我第一次看到yaml覺得跟json好像，根本是同父異母的兄弟阿! <img src="/sticker/shock-square.gif" class="sticker"/> (好吧…可能只有我不知道)</p><h2 id="yaml簡介"><a href="#yaml簡介" class="headerlink" title="yaml簡介"></a>yaml簡介</h2><ul><li>全名: YAML Ain’t a Markup Language</li><li>為資料庫或設定檔</li><li>簡單易讀</li></ul><h2 id="yaml與json比較"><a href="#yaml與json比較" class="headerlink" title="yaml與json比較"></a>yaml與json比較</h2><p>上面為yaml,下面為json 是不是超級像! <img src="/sticker/4b7669c29fe80.gif" class="sticker"/></p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">Jing</span><span class="hljs-attr">age:</span> <span class="hljs-number">18</span><span class="hljs-attr">female:</span> <span class="hljs-literal">true</span><span class="hljs-attr">friends:</span> [<span class="hljs-string">小美</span>, <span class="hljs-string">小明</span>, <span class="hljs-string">小黑</span>]<span class="hljs-attr">fruit:</span>   <span class="hljs-bullet">-</span> <span class="hljs-string">banan</span>  <span class="hljs-bullet">-</span> <span class="hljs-string">apple</span>  <span class="hljs-bullet">-</span> <span class="hljs-string">cherry</span><span class="hljs-attr">languages:</span>   <span class="hljs-attr">javascript:</span> <span class="hljs-string">還行</span>  <span class="hljs-attr">python:</span> <span class="hljs-string">入門</span><span class="hljs-attr">social:</span>   <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">github</span>    <span class="hljs-attr">url:</span> <span class="hljs-string">https://github.com/Jing-siao</span>  <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">email</span>    <span class="hljs-attr">url:</span> <span class="hljs-string">vicky820715@gmail.com</span></code></pre></div><div class="hljs code-wrapper"><pre><code class="hljs json">&#123;    <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Jing&quot;</span>,    <span class="hljs-attr">&quot;age&quot;</span>: <span class="hljs-number">18</span>,    <span class="hljs-attr">&quot;female&quot;</span>: <span class="hljs-literal">true</span>,    <span class="hljs-attr">&quot;friends&quot;</span>: [<span class="hljs-string">&quot;小美&quot;</span>, <span class="hljs-string">&quot;小明&quot;</span>, <span class="hljs-string">&quot;小黑&quot;</span>],    <span class="hljs-attr">&quot;fruit&quot;</span>: [<span class="hljs-string">&quot;banan&quot;</span>,         <span class="hljs-string">&quot;apple&quot;</span>,         <span class="hljs-string">&quot;cherry&quot;</span>,    ],    <span class="hljs-attr">&quot;languages&quot;</span>: &#123;<span class="hljs-attr">&quot;javascript&quot;</span>: <span class="hljs-string">&quot;還行&quot;</span>,<span class="hljs-attr">&quot;python&quot;</span>: <span class="hljs-string">&quot;入門&quot;</span>     &#125;,    <span class="hljs-attr">&quot;social&quot;</span>: [        &#123;          <span class="hljs-attr">&quot;platform&quot;</span>: <span class="hljs-string">&quot;github&quot;</span>,          <span class="hljs-attr">&quot;url&quot;</span>: <span class="hljs-string">&quot;https://github.com/Jing-siao&quot;</span>        &#125;,        &#123;          <span class="hljs-attr">&quot;platform&quot;</span>: <span class="hljs-string">&quot;email&quot;</span>,          <span class="hljs-attr">&quot;url&quot;</span>: <span class="hljs-string">&quot;vicky820715@gmail.com&quot;</span>        &#125;      ]&#125;</code></pre></div><h2 id="yaml語法"><a href="#yaml語法" class="headerlink" title="yaml語法"></a>yaml語法</h2><ul><li><h3 id="key-value-pair"><a href="#key-value-pair" class="headerlink" title="key-value pair"></a>key-value pair</h3><p>key冒號空格value,注意冒號後面一定要有<span class="label label-danger">空格</span>歐</p></li><li><h3 id="每一個key-value-不能在同一行"><a href="#每一個key-value-不能在同一行" class="headerlink" title="每一個key-value 不能在同一行"></a>每一個key-value 不能在同一行</h3><p>記得打完一行要換行，不像json可以擠在同一行</p></li><li><h3 id="字串不需要包在引號之內"><a href="#字串不需要包在引號之內" class="headerlink" title="字串不需要包在引號之內"></a>字串不需要包在引號之內</h3><p>常見的字串一定要包在單引號或雙引內，但yaml不需要</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">Jing</span>  <span class="hljs-comment">#字串</span><span class="hljs-attr">age:</span> <span class="hljs-number">18</span>  <span class="hljs-comment">#key: value</span></code></pre></div></li><li><h3 id="為註解"><a href="#為註解" class="headerlink" title="#為註解"></a>#為註解</h3><p>只要在前方加上<span class="label label-danger">#</span>就可以註解囉</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-comment">#我是註解</span></code></pre></div></li><li><h3 id="key值不能重複"><a href="#key值不能重複" class="headerlink" title="key值不能重複"></a>key值不能重複</h3><p>key的名稱不能一樣  </p><div class="note note-warning">            <p>錯誤寫法: </p>          </div>  <div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">age:</span> <span class="hljs-number">18</span>  <span class="hljs-attr">age:</span> <span class="hljs-number">18</span></code></pre></div><p>正確寫法:</p>  <div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">age1:</span> <span class="hljs-number">18</span>  <span class="hljs-attr">age2:</span> <span class="hljs-number">18</span></code></pre></div><p>但如果在陣列裡就可以</p><p>像這樣有兩組platform,跟json的物件是一樣意思</p> <div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">social:</span>   <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">github</span>    <span class="hljs-attr">url:</span> <span class="hljs-string">https://github.com/Jing-siao</span>  <span class="hljs-bullet">-</span> <span class="hljs-attr">platform:</span> <span class="hljs-string">email</span>    <span class="hljs-attr">url:</span> <span class="hljs-string">vicky820715@gmail.com</span></code></pre></div></li><li><h3 id="或-為陣列形式"><a href="#或-為陣列形式" class="headerlink" title="[ ]或 - 為陣列形式"></a>[ ]或 - 為陣列形式</h3><p>在yaml有兩種陣列表達方式</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">friends:</span> [<span class="hljs-string">小美</span>, <span class="hljs-string">小明</span>, <span class="hljs-string">小黑</span>]</code></pre></div><p>或</p><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">friends:</span> <span class="hljs-bullet">-</span> <span class="hljs-string">小美</span><span class="hljs-bullet">-</span> <span class="hljs-string">小明</span><span class="hljs-bullet">-</span> <span class="hljs-string">小黑</span></code></pre></div><p>這兩種是一樣的意思歐</p></li><li><h3 id="多行資料的表示方法"><a href="#多行資料的表示方法" class="headerlink" title="多行資料的表示方法"></a>多行資料的表示方法</h3><p>字太長怎麼辦?剛剛上面不是有講說一定要一行key-value嗎?可是人家就想換行咩! ( T 3 T )</p><ul><li><span class="label label-danger">|</span> 保留換行 ，不同的縮排會保留差異</li></ul>  <div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">string:</span> <span class="hljs-string">|</span><span class="hljs-string">  My name is Jing.</span><span class="hljs-string">  I&#x27;m 18 years old.</span></code></pre></div><p>  結果為</p>  <div class="hljs code-wrapper"><pre><code class="hljs html">My name is Jing.I&#x27;m 18 years old.</code></pre></div><ul><li><span class="label label-danger">></span> 不換行 ，換行會被轉換成空白，只有空白行才視為換行</li></ul><div class="hljs code-wrapper"><pre><code class="hljs yaml"><span class="hljs-attr">string:</span> <span class="hljs-string">&gt;</span><span class="hljs-string">My</span> <span class="hljs-string">name</span> <span class="hljs-string">is</span> <span class="hljs-string">Jing.</span><span class="hljs-string">I&#x27;m</span> <span class="hljs-number">18</span> <span class="hljs-string">years</span> <span class="hljs-string">old.</span>  <span class="hljs-string">I</span> <span class="hljs-string">am</span> <span class="hljs-string">a</span> <span class="hljs-string">coder.</span>  <span class="hljs-string">I</span> <span class="hljs-string">write</span> <span class="hljs-string">code.</span></code></pre></div><p>結果為</p><div class="hljs code-wrapper"><pre><code class="hljs html">My name is Jing.I&#x27;m 18 years old.I am a coder.I write code.</code></pre></div><hr><p>常用的大概這樣，希望這些對大家有所幫助! <img src="/sticker/happy-jump.gif" class="sticker"/></p><p>參考資料:<br><a href="https://zh.wikipedia.org/wiki/YAML">yaml維基百科</a><br><a href="https://www.youtube.com/watch?v=qyIUwTjn6dM&ab_channel=%E8%80%81%E6%98%8E">Home Assistant (HA): 什麽是YAML？和JSON格式有什麽不同？【明富其識】</a></p></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>筆記</category>
+      
+      <category>learn</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>yaml</tag>
+      
+      <tag>json</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Blog開張啦!</title>
+    <link href="/first-article/"/>
+    <url>/first-article/</url>
+    
+    <content type="html"><![CDATA[<h1 id="部落格終於開張啦"><a href="#部落格終於開張啦" class="headerlink" title="部落格終於開張啦!"></a>部落格終於開張啦!</h1><p>部落格建立blog的第一天，使用 GitHub Pages + Hexo 來架設個人網站，這邊會記錄程式筆記及一些文章，之後再慢慢陸續增加啦!</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>blog</category>
+      
+      <category>心得</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Blog</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
