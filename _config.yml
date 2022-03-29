@@ -151,7 +151,7 @@ deploy:
   type: git
   repo: https://github.com/jing-siao/jing-siao.github.io.git # 你的儲存庫 clone
   branch: gh-pages # 儲存庫分支
-  message: "發布點擊空白處隱藏元素文章" # Commit 訊息
+  message: "發布偵聽select下拉選單文章" # Commit 訊息
 
 
 
