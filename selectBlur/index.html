@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="zh-TW" data-default-color-scheme="auto"><head><meta charset="UTF-8"><link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png"><link rel="icon" href="/img/favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,shrink-to-fit=no"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="theme-color" content="#2f4154"><meta name="description" content=""><meta name="author" content="Jing Siao"><meta name="keywords" content=""><meta name="description" content="偵聽select下拉選單有無被打開(原生js)在做日期選擇器練習時遇到一些問題，下拉選單出現時，需要顯示出”選擇中”的字樣，由於select在點擊外面時，下拉選單會被收起，滑動滾輪時也會被收起，以下先附上我codepen連結datePicker,再來做解釋如何解決。 需要步驟 未選擇日期時，或日期尚未選擇完整時show出”請選擇日期” 當按下select時，也就是下拉選單出現時，要顯示出&quot;選擇中&quot;"><meta property="og:type" content="article"><meta property="og:title" content="偵聽select下拉選單有無被打開(原生js)"><meta property="og:url" content="https://jing-siao.github.io/selectBlur/"><meta property="og:site_name" content="Jing&#39;s blog"><meta property="og:description" content="偵聽select下拉選單有無被打開(原生js)在做日期選擇器練習時遇到一些問題，下拉選單出現時，需要顯示出”選擇中”的字樣，由於select在點擊外面時，下拉選單會被收起，滑動滾輪時也會被收起，以下先附上我codepen連結datePicker,再來做解釋如何解決。 需要步驟 未選擇日期時，或日期尚未選擇完整時show出”請選擇日期” 當按下select時，也就是下拉選單出現時，要顯示出&quot;選擇中&quot;"><meta property="og:locale" content="zh_TW"><meta property="og:image" content="https://jing-siao.github.io/img/post/%E5%81%B5%E8%81%BDselect/CPT2203292151-478x424.gif"><meta property="og:image" content="https://jing-siao.github.io/sticker/shock-square.gif"><meta property="article:published_time" content="2022-03-29T16:46:13.000Z"><meta property="article:modified_time" content="2022-03-29T16:46:13.530Z"><meta property="article:author" content="Jing Siao"><meta property="article:tag" content="javascript"><meta property="article:tag" content="select"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://jing-siao.github.io/img/post/%E5%81%B5%E8%81%BDselect/CPT2203292151-478x424.gif"><title>偵聽select下拉選單有無被打開(原生js) - Jing&#39;s blog</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css"><link rel="stylesheet" href="/lib/hint/hint.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/vs2015.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/css/custom.css"><script id="fluid-configs">var Fluid=window.Fluid||{},CONFIG={hostname:"jing-siao.github.io",root:"/",version:"1.8.12",typing:{enable:!0,typeSpeed:75,cursorChar:"|",loop:!1},anchorjs:{enable:!0,element:"h1,h2,h3,h4,h5,h6",placement:"right",visible:"hover",icon:""},progressbar:{enable:!0,height_px:3,color:"#29d",options:{showSpinner:!1,trickleSpeed:100}},copy_btn:!0,image_zoom:{enable:!0,img_url_replace:["",""]},toc:{enable:!0,headingSelector:"h1,h2,h3,h4,h5,h6",collapseDepth:0},lazyload:{enable:!0,loading_img:"/img/loading.gif",onlypost:!1,offset_factor:2},web_analytics:{enable:!0,baidu:null,google:"G-53DYQ0EGGC",gtag:null,tencent:{sid:null,cid:null},woyaola:null,cnzz:null,leancloud:{app_id:null,app_key:null,server_url:null,path:"window.location.pathname"}},search_path:"/local-search.xml"}</script><script src="/js/utils.js"></script><script src="/js/color-schema.js"></script><meta name="generator" content="Hexo 5.4.0"></head><body><header style="height:70vh"><nav id="navbar" class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"><div class="container"><a class="navbar-brand" href="/"><strong>Jing&#39;s blog</strong> </a><button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><div class="animated-icon"><span></span><span></span><span></span></div></button><div class="collapse navbar-collapse" id="navbarSupportedContent"><ul class="navbar-nav ml-auto text-center"><li class="nav-item"><a class="nav-link" href="/"><i class="iconfont icon-home-fill"></i> 首頁</a></li><li class="nav-item"><a class="nav-link" href="/archives/"><i class="iconfont icon-archive-fill"></i> 封存</a></li><li class="nav-item"><a class="nav-link" href="/categories/"><i class="iconfont icon-category-fill"></i> 分類</a></li><li class="nav-item"><a class="nav-link" href="/tags/"><i class="iconfont icon-tags-fill"></i> 標籤</a></li><li class="nav-item"><a class="nav-link" href="/about/"><i class="iconfont icon-user-fill"></i> 關於</a></li><li class="nav-item" id="search-btn"><a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">&nbsp;<i class="iconfont icon-search"></i>&nbsp;</a></li><li class="nav-item" id="color-toggle-btn"><a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a></li></ul></div></div></nav><div class="banner" id="banner" parallax="true" style="background:url(/img/Code%20typing%20illustration.png) no-repeat center center;background-size:cover"><div class="full-bg-img"><div class="mask flex-center" style="background-color:rgba(0,0,0,.3)"><div class="page-header text-center fade-in-up"><span class="h2" id="subtitle" title="偵聽select下拉選單有無被打開(原生js)"></span><div class="mt-3"><span class="post-meta"><i class="iconfont icon-date-fill" aria-hidden="true"></i> <time datetime="2022-03-30 00:46" pubdate>2022年3月30日 凌晨</time></span></div><div class="mt-1"><span class="post-meta mr-2"><i class="iconfont icon-chart"></i> 6k 字 </span><span class="post-meta mr-2"><i class="iconfont icon-clock-fill"></i> 19 分鐘</span></div></div></div></div></div></header><main><div class="container-fluid nopadding-x"><div class="row nomargin-x"><div class="d-none d-lg-block col-lg-2"></div><div class="col-lg-8 nopadding-x-md"><div class="container nopadding-x-md" id="board-ctn"><div class="py-5" id="board"><article class="post-content mx-auto"><h1 style="display:none">偵聽select下拉選單有無被打開(原生js)</h1><div class="markdown-body"><h1 id="偵聽select下拉選單有無被打開-原生js"><a href="#偵聽select下拉選單有無被打開-原生js" class="headerlink" title="偵聽select下拉選單有無被打開(原生js)"></a>偵聽select下拉選單有無被打開(原生js)</h1><p>在做日期選擇器練習時遇到一些問題，下拉選單出現時，需要顯示出”選擇中”的字樣，由於select在點擊外面時，下拉選單會被收起，滑動滾輪時也會被收起，以下先附上我codepen連結<a target="_blank" rel="noopener" href="https://codepen.io/JingWunHsiao/pen/gOXVRGK">datePicker</a>,再來做解釋如何解決。</p><h2 id="需要步驟"><a href="#需要步驟" class="headerlink" title="需要步驟"></a>需要步驟</h2><ul><li>未選擇日期時，或日期尚未選擇完整時show出”請選擇日期”</li><li>當按下select時，也就是下拉選單出現時，要顯示出<span class="label label-danger">"選擇中"</span>的字樣</li><li>日期選擇完整後出現日期與日曆<br><img src="/img/post/%E5%81%B5%E8%81%BDselect/CPT2203292151-478x424.gif" srcset="/img/loading.gif" lazyload alt=" "><br>看起來好像不難對不對，但其實有超多bug要修，先上HTML及jS部份，再一一說明</li></ul><div class="hljs code-wrapper"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;out&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;year&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;yearSelect&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;hide&quot;</span>&gt;</span>-- Year --<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;month&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;monthSelect&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;hide&quot;</span>&gt;</span>-- Month --<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;day&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;daySelect&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;hide&quot;</span>&gt;</span>-- Day --<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dateChoose&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;dateChoose&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;out&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;calendar&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre></div><div class="hljs code-wrapper"><pre><code class="hljs javascript">
+<span class="hljs-keyword">var</span> temp = <span class="hljs-literal">true</span>;
+<span class="hljs-keyword">var</span> firstDay = -<span class="hljs-number">1</span>;
+<span class="hljs-keyword">var</span> days = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">var</span> rows = <span class="hljs-number">0</span>;
+
+<span class="hljs-comment">//是否選擇中狀態</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">select</span>(<span class="hljs-params"></span>) </span>&#123;
+  temp = !temp;
+  !temp ? dateChoose.innerText = <span class="hljs-string">&quot;選擇中...&quot;</span> : chose();
+&#125;;
+<span class="hljs-comment">//換字</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chose</span>(<span class="hljs-params"></span>) </span>&#123;
+  !yearSelect.value || !monthSelect.value || !daySelect.value ?
+    dateChoose.innerText = <span class="hljs-string">&quot;請選擇日期&quot;</span> :
+    dateChoose.innerText = <span class="hljs-string">`<span class="hljs-subst">$&#123;yearSelect.value&#125;</span>年<span class="hljs-subst">$&#123;monthSelect.value&#125;</span>月<span class="hljs-subst">$&#123;daySelect.value&#125;</span>日`</span>;
+&#125;;
+<span class="hljs-comment">//塞年月日選項</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createOption</span>(<span class="hljs-params">start, end, select</span>) </span>&#123;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = start; i &lt;= end; i++) &#123;
+    <span class="hljs-keyword">let</span> options = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;option&#x27;</span>);
+    options.value = i;
+    options.text = i;
+    select.add(options);
+  &#125;
+&#125;;
+<span class="hljs-comment">//判斷空白處</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notId</span>(<span class="hljs-params">e, text</span>) </span>&#123;
+  <span class="hljs-keyword">let</span> id = e.target.id;
+  <span class="hljs-keyword">if</span> (id != yearSelect.id &amp;&amp; id != monthSelect.id &amp;&amp; id != daySelect.id) &#123;
+    temp = <span class="hljs-literal">true</span>;
+    chose();
+    <span class="hljs-built_in">console</span>.log(text);
+  &#125;
+&#125;;
+<span class="hljs-comment">//取得天數</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getDays</span>(<span class="hljs-params">select</span>) </span>&#123;
+  select.addEventListener(<span class="hljs-string">&quot;change&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+    <span class="hljs-keyword">if</span> (yearSelect.value &amp;&amp; monthSelect.value) &#123;
+      days = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(yearSelect.value, monthSelect.value, <span class="hljs-number">0</span>).getDate();
+      daySelect.options.length = <span class="hljs-number">1</span>;
+      createOption(<span class="hljs-number">1</span>, days, daySelect);
+      firstDay = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(yearSelect.value, monthSelect.value - <span class="hljs-number">1</span>, <span class="hljs-number">1</span>).getDay();
+      rows = <span class="hljs-built_in">Math</span>.ceil((firstDay + days) / <span class="hljs-number">7</span>);
+      <span class="hljs-comment">// console.log(firstDay);</span>
+    &#125;
+  &#125;);
+&#125;;
+<span class="hljs-comment">//生成日曆</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createCalendar</span>(<span class="hljs-params">table,newCalendar</span>) </span>&#123;
+  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">const</span> week = [<span class="hljs-string">&#x27;Sun&#x27;</span>, <span class="hljs-string">&#x27;Mon&#x27;</span>, <span class="hljs-string">&#x27;Tue&#x27;</span>, <span class="hljs-string">&#x27;Wed&#x27;</span>, <span class="hljs-string">&#x27;Thu&#x27;</span>, <span class="hljs-string">&#x27;Fri&#x27;</span>, <span class="hljs-string">&#x27;Sat&#x27;</span>];
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; rows + <span class="hljs-number">1</span>; i++) &#123;
+        <span class="hljs-keyword">let</span> trNode = table.insertRow();
+        <span class="hljs-keyword">if</span> (i === <span class="hljs-number">0</span>) &#123;
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> k <span class="hljs-keyword">of</span> week) &#123;
+            <span class="hljs-keyword">let</span> th = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;th&#x27;</span>);
+            th.innerText = k;
+            trNode.appendChild(th);
+          &#125;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> y = <span class="hljs-number">0</span>; y &lt; <span class="hljs-number">7</span>; y++) &#123;
+            <span class="hljs-keyword">let</span> tdNode = trNode.insertCell();
+            count++;
+            count &lt; firstDay + <span class="hljs-number">1</span> || count &gt; days + firstDay?
+              tdNode.innerHTML = <span class="hljs-string">&#x27;&#x27;</span>:
+              tdNode.innerHTML = count - firstDay;
+            <span class="hljs-keyword">if</span> (tdNode.innerHTML === daySelect.value) &#123;
+                tdNode.classList.add(<span class="hljs-string">&#x27;tdActive&#x27;</span>);
+            &#125;
+          &#125;
+        &#125;
+      &#125;
+      newCalendar.appendChild(table);
+&#125;;
+
+<span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">&quot;DOMContentLoaded&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+  <span class="hljs-keyword">const</span> yearSelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;yearSelect&#x27;</span>);
+  <span class="hljs-keyword">const</span> monthSelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;monthSelect&#x27;</span>);
+  <span class="hljs-keyword">const</span> daySelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;daySelect&#x27;</span>);
+  <span class="hljs-keyword">const</span> dateChoose = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;dateChoose&#x27;</span>);
+
+
+  <span class="hljs-comment">//select部分</span>
+  dateChoose.innerText = <span class="hljs-string">&quot;請選擇日期&quot;</span>;
+  createOption(<span class="hljs-number">2010</span>, <span class="hljs-number">2025</span>, yearSelect);
+  createOption(<span class="hljs-number">1</span>, <span class="hljs-number">12</span>, monthSelect);
+  yearSelect.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, select);
+  <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;
+    notId(e, <span class="hljs-string">&quot;外面&quot;</span>)
+  &#125;);
+  <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">&quot;mousewheel&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;
+    notId(e, <span class="hljs-string">&quot;滾輪&quot;</span>)
+  &#125;);
+  getDays(yearSelect);
+  getDays(monthSelect);
+  monthSelect.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+    !yearSelect.value ?
+      alert(<span class="hljs-string">&quot;請先選擇年份&quot;</span>) :
+      select();
+  &#125;);
+  daySelect.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+    !yearSelect.value ?
+      alert(<span class="hljs-string">&quot;請先選擇年份&quot;</span>) :
+      !monthSelect.value ?
+        alert(<span class="hljs-string">&quot;請先選擇月份&quot;</span>) :
+        select();
+  &#125;);
+  <span class="hljs-comment">//日曆部份</span>
+  daySelect.addEventListener(<span class="hljs-string">&#x27;change&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;
+    <span class="hljs-keyword">const</span> calendar = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;calendar&quot;</span>);
+    <span class="hljs-keyword">const</span> tableNode = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;table&#x27;</span>);
+    tableNode.id = <span class="hljs-string">&#x27;tableId&#x27;</span>;
+    <span class="hljs-keyword">let</span> tableElement = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">&#x27;table&#x27;</span>).length;
+    <span class="hljs-keyword">if</span> (tableElement &gt; <span class="hljs-number">0</span>) &#123;
+      <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;tableId&#x27;</span>).remove();
+      createCalendar(tableNode,calendar);
+    &#125; <span class="hljs-keyword">else</span> &#123;
+      createCalendar(tableNode,calendar);
+    &#125;
+  &#125;);
+
+
+&#125;);</code></pre></div><h2 id="解決無選擇日期直接點擊空白處，選擇中狀態卻無消失"><a href="#解決無選擇日期直接點擊空白處，選擇中狀態卻無消失" class="headerlink" title="解決無選擇日期直接點擊空白處，選擇中狀態卻無消失"></a>解決無選擇日期直接點擊空白處，選擇中狀態卻無消失</h2><p>剛剛提到只有在下拉選單出現時，才顯示出<span class="label label-danger">"選擇中"</span>的字樣，但點旁邊空白處時，也就是不在select裡，狀態就會一直卡在”選擇中”，這個部份可以參考我上一篇的作法<a href="https://jing-siao.github.io/blurAction/">(jquery點擊空白處隱藏元素)</a>，這裡一樣用類似的作法，你可以想像成有無選擇狀態，跟toggle有點像。</p><ul><li><p>先給一個存放狀態的變數，在給各個select宣告變數</p><div class="hljs code-wrapper"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> temp = <span class="hljs-literal">true</span>;
+<span class="hljs-keyword">const</span> yearSelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;yearSelect&#x27;</span>);
+<span class="hljs-keyword">const</span> monthSelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;monthSelect&#x27;</span>);
+<span class="hljs-keyword">const</span> daySelect = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;daySelect&#x27;</span>);
+<span class="hljs-keyword">const</span> dateChoose = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;dateChoose&#x27;</span>);</code></pre></div></li><li><p>給預設字</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">dateChoose.innerText = <span class="hljs-string">&quot;請選擇日期&quot;</span>;</code></pre></div></li><li><p>點擊select呼叫方法<br>這邊是把<span class="label label-danger">temp</span>狀態從<span class="label label-danger">true改成false</span>，若為false時，則字就變成選擇中，若為true時，則字就變成選擇的日期</p><div class="hljs code-wrapper"><pre><code class="hljs javascript">yearSelect.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, select);
+<span class="hljs-comment">//是否選擇中狀態</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">select</span>(<span class="hljs-params"></span>) </span>&#123;
+  temp = !temp;
+  !temp ? dateChoose.innerText = <span class="hljs-string">&quot;選擇中...&quot;</span> : chose();
+&#125;;
+<span class="hljs-comment">//換字</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">chose</span>(<span class="hljs-params"></span>) </span>&#123;
+  !yearSelect.value || !monthSelect.value || !daySelect.value ?
+    dateChoose.innerText = <span class="hljs-string">&quot;請選擇日期&quot;</span> :
+    dateChoose.innerText = <span class="hljs-string">`<span class="hljs-subst">$&#123;yearSelect.value&#125;</span>年<span class="hljs-subst">$&#123;monthSelect.value&#125;</span>月<span class="hljs-subst">$&#123;daySelect.value&#125;</span>日`</span>;
+&#125;;
+</code></pre></div><h3 style="color:red">重點來了!!</h3></li><li><p>當document被點擊時，判斷是否在select外面<br>這邊可以console出來看看有沒有點在外面</p><div class="hljs code-wrapper"><pre><code class="hljs javascript"> <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;
+    notId(e, <span class="hljs-string">&quot;外面&quot;</span>)
+  &#125;);
+  <span class="hljs-comment">//判斷空白處</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notId</span>(<span class="hljs-params">e, text</span>) </span>&#123;
+  <span class="hljs-keyword">let</span> id = e.target.id;
+  <span class="hljs-keyword">if</span> (id != yearSelect.id &amp;&amp; id != monthSelect.id &amp;&amp; id != daySelect.id) &#123;
+    temp = <span class="hljs-literal">true</span>;
+    chose();
+    <span class="hljs-built_in">console</span>.log(text);
+  &#125;
+&#125;;
+</code></pre></div><h2 id="解決無選擇日期直接滾動滾輪，選擇中狀態卻無消失"><a href="#解決無選擇日期直接滾動滾輪，選擇中狀態卻無消失" class="headerlink" title="解決無選擇日期直接滾動滾輪，選擇中狀態卻無消失"></a>解決無選擇日期直接滾動滾輪，選擇中狀態卻無消失</h2></li><li><p>判斷是否在select外面使用滾輪事件<br>這裡的滾輪不是指視窗中的捲軸，所以用scroll是沒有用的</p><div class="hljs code-wrapper"><pre><code class="hljs javascript"><span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">&quot;mousewheel&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">e</span>) </span>&#123;
+  notId(e, <span class="hljs-string">&quot;滾輪&quot;</span>)
+&#125;);
+</code></pre></div></li></ul><p>看到這裡你會發現怎麼那麼麻煩阿!而且在select上面直接滾動滑鼠滾輪(不是下拉選單歐)，一樣會壞掉，是因為我們剛剛function已經排除掉select部分，所以當然選單收起來一樣會出現選擇中，那為什麼不直接用&lt;div&gt;及&lt;ul&gt;就好?</p><p>對欸!突破盲腸了!各位! <img src="/sticker/shock-square.gif" srcset="/img/loading.gif" lazyload class="sticker"><br>而且select還不能客製樣式!不就打臉自己嗎?好啦~ 這個故事告訴我們要多多善用div哈哈哈..XD(打)</p><hr><p>參考資料:<br>我的codepen連結<a target="_blank" rel="noopener" href="https://codepen.io/JingWunHsiao/pen/gOXVRGK">datePicker</a></p></div><hr><div><div class="post-metas mb-3"><div class="post-meta mr-3"><i class="iconfont icon-category"></i> <a class="hover-with-bg" href="/categories/%E7%AD%86%E8%A8%98/">筆記</a> <a class="hover-with-bg" href="/categories/%E7%AD%86%E8%A8%98/javascript/">javascript</a></div><div class="post-meta"><i class="iconfont icon-tags"></i> <a class="hover-with-bg" href="/tags/javascript/">javascript</a> <a class="hover-with-bg" href="/tags/select/">select</a></div></div><p class="note note-warning">本部落格所有文章除特别聲明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 協議</a> ，轉載請註明出處！</p><div class="post-prevnext"><article class="post-prev col-6"></article><article class="post-next col-6"><a href="/blurAction/"><span class="hidden-mobile">jquery點擊空白處隱藏元素</span> <span class="visible-mobile">下一篇</span> <i class="iconfont icon-arrowright"></i></a></article></div></div><article class="comments" id="comments" lazyload><div class="disqus" style="width:100%"><div id="disqus_thread"></div><script>Fluid.utils.loadComments("#disqus_thread",function(){Fluid.utils.createCssLink("https://cdn.jsdelivr.net/npm/disqusjs@1/dist/disqusjs.css"),Fluid.utils.createScript("https://cdn.jsdelivr.net/npm/disqusjs@1/dist/disqus.js",function(){new DisqusJS({shortname:"jingblog-1",apikey:""})})})</script><noscript>Please enable JavaScript to view the comments</noscript></div></article></article></div></div></div><div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn"><div id="toc"><p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目錄</p><div class="toc-body" id="toc-body"></div></div></div></div></div><a id="scroll-top-button" aria-label="TOP" href="#" role="button"><i class="iconfont icon-arrowup" aria-hidden="true"></i></a><div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable modal-lg" role="document"><div class="modal-content"><div class="modal-header text-center"><h4 class="modal-title w-100 font-weight-bold">搜尋</h4><button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body mx-3"><div class="md-form mb-5"><input type="text" id="local-search-input" class="form-control validate"> <label data-error="x" data-success="v" for="local-search-input">關鍵字</label></div><div class="list-group" id="local-search-result"></div></div></div></div></div></main><footer class="text-center mt-5 py-3"><div class="footer-content"><a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a></div></footer><script src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css"><script>NProgress.configure({showSpinner:!1,trickleSpeed:100}),NProgress.start(),window.addEventListener("load",function(){NProgress.done()})</script><script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js"></script><script src="/js/events.js"></script><script src="/js/plugins.js"></script><script src="/js/local-search.js"></script><script src="/js/img-lazyload.js"></script><script src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script><script src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js"></script><script>!function(t){(0,Fluid.plugins.typing)(t.getElementById("subtitle").title)}((window,document))</script><script defer>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-53DYQ0EGGC","auto"),ga("send","pageview")</script><script async src="https://www.google-analytics.com/analytics.js"></script><script src="/js/custom.js"></script><script src="/js/boot.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({pluginRootPath:"live2dw/",pluginJsPath:"lib/",pluginModelPath:"assets/",tagMode:!1,log:!1,model:{jsonPath:"/live2dw/assets/hijiki.model.json"},display:{position:"left",hOffset:30,vOffset:-60,width:150,height:300},mobile:{show:!1}})</script></body></html>
